@@ -1,0 +1,92 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto mt-10 max-w-6xl px-4">
+      <div class="section-kicker">Hosting overview</div>
+      <h1 class="section-heading">Guest bookings</h1>
+      <a href="/host/reviews" class="text-link host-dashboard-reviews-link">Read guest feedback →</a>
+
+      <div class="grid gap-4 md:grid-cols-5 mb-8">
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-center">
+          <p class="text-sm text-gray-500">Total Properties</p>
+          <p class="text-3xl font-bold text-gray-800"><%= stats.totalProperties %></p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-center">
+          <p class="text-sm text-gray-500">Total Bookings</p>
+          <p class="text-3xl font-bold text-gray-800"><%= stats.totalBookings %></p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-center">
+          <p class="text-sm text-gray-500">Upcoming Bookings</p>
+          <p class="text-3xl font-bold text-gray-800"><%= stats.upcomingBookings %></p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-center">
+          <p class="text-sm text-gray-500">Cancelled Bookings</p>
+          <p class="text-3xl font-bold text-gray-800"><%= stats.cancelledBookings %></p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-center">
+          <p class="text-sm text-gray-500">Total Earnings</p>
+          <p class="text-2xl font-bold text-gray-800"><%= formatCurrency(stats.totalEarnings) %></p>
+        </div>
+      </div>
+
+      <% if (!bookings.length) { %>
+        <div class="empty-state"><h2>No bookings yet</h2><p class="property-meta">When guests reserve your properties, their booking details will appear here.</p></div>
+      <% } else { %>
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Guest</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Property</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Check-in</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Check-out</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Guests</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% bookings.forEach(booking => { %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><%= booking.user ? `${booking.user.firstName} ${booking.user.lastName || ''}` : 'Guest account unavailable' %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><%= booking.home ? booking.home.houseName : 'Property unavailable' %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"><%= booking.guests %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                  <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium <%= booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' %>">
+                    <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                  </span>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+      <section class="host-feedback-preview" aria-labelledby="host-feedback-heading">
+        <div class="host-feedback-heading">
+          <div><div class="section-kicker">What guests are saying</div><h2 id="host-feedback-heading" class="section-heading">Recent reviews</h2></div>
+          <a href="/host/reviews" class="text-link">All feedback <span aria-hidden="true">→</span></a>
+        </div>
+        <% if (!recentReviews.length) { %>
+          <p class="property-meta">Guest reviews for your properties will appear here.</p>
+        <% } else { %>
+          <div class="host-feedback-list">
+            <% recentReviews.forEach(review => { %>
+              <article class="review-card">
+                <div class="review-card-top">
+                  <div><p class="review-property-name"><%= review.home ? review.home.houseName : 'Property unavailable' %></p><p class="review-author"><%= review.author ? review.author.firstName : 'Thikana guest' %> · <%= new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></p></div>
+                  <span class="review-stars" aria-label="<%= review.rating %> out of 5 stars"><%= '★'.repeat(review.rating) %><span class="review-stars-empty"><%= '★'.repeat(5 - review.rating) %></span></span>
+                </div>
+                <p class="review-card-comment"><%= review.comment %></p>
+                <% if (review.home) { %><a class="review-property-link" href="/homes/<%= review.home._id %>#reviews">View property reviews →</a><% } %>
+              </article>
+            <% }) %>
+          </div>
+        <% } %>
+      </section>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

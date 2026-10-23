@@ -1,0 +1,107 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="auth-page auth-page-signup">
+      <div class="auth-layout auth-layout-signup">
+        <section class="auth-visual" aria-label="A welcoming home away from home">
+          <img src="/images/thikana-auth.png" alt="A mountain homestay overlooking a green valley at sunset" fetchpriority="high">
+          <div class="auth-visual-shade"></div>
+          <div class="auth-visual-content">
+            <span class="auth-photo-label"><span aria-hidden="true">✦</span> YOUR NEXT CHAPTER STARTS HERE</span>
+            <h1>Find a stay that feels a little more like you.</h1>
+            <p>Save the places you love. Plan the trips you can’t stop thinking about.</p>
+            <div class="auth-visual-footer"><span class="auth-visual-mark" aria-hidden="true">⌂</span><span>Thikana <i>·</i> Find Your Next Stay.</span></div>
+          </div>
+        </section>
+
+        <section class="auth-form-panel" aria-labelledby="signup-heading">
+          <div class="auth-form-heading">
+            <span class="auth-eyebrow">A WARM WELCOME</span>
+            <h2 id="signup-heading">Make yourself at home.</h2>
+            <p>Create your account and start discovering stays worth remembering.</p>
+          </div>
+          <form action="/signup" method="POST" class="auth-form signup-form">
+            <%- include('../partials/errors') %>
+
+            <div class="auth-input-grid">
+              <div class="auth-field">
+                <label for="first-name">First name</label>
+                <input id="first-name" type="text" name="firstName" placeholder="First name"
+                  value="<%= oldInput.firstName || '' %>" autocomplete="given-name" required>
+              </div>
+              <div class="auth-field">
+                <label for="last-name">Last name <span class="auth-optional">Optional</span></label>
+                <input id="last-name" type="text" name="lastName" placeholder="Last name"
+                  value="<%= oldInput.lastName || '' %>" autocomplete="family-name">
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <label for="signup-email">Email address</label>
+              <input id="signup-email" type="email" name="email" placeholder="you@example.com"
+                value="<%= oldInput.email || '' %>" autocomplete="email" required>
+            </div>
+
+            <div class="auth-input-grid">
+              <div class="auth-field">
+                <label for="signup-password">Password</label>
+                <div class="auth-password-field">
+                  <input id="signup-password" type="password" name="password" placeholder="Create a password"
+                    autocomplete="new-password" required>
+                  <button type="button" class="password-toggle" data-password-toggle="signup-password" aria-label="Show password">Show</button>
+                </div>
+              </div>
+              <div class="auth-field">
+                <label for="confirm-password">Confirm password</label>
+                <div class="auth-password-field">
+                  <input id="confirm-password" type="password" name="confirmPassword" placeholder="Repeat password"
+                    autocomplete="new-password" required>
+                  <button type="button" class="password-toggle" data-password-toggle="confirm-password" aria-label="Show password">Show</button>
+                </div>
+              </div>
+            </div>
+
+            <fieldset class="auth-role-fieldset">
+              <legend>I’m here as a</legend>
+              <div class="auth-role-options">
+                <label class="auth-role-option" for="guest">
+                  <input type="radio" name="userType" value="guest" id="guest"
+                    <%= !oldInput.userType || oldInput.userType === "guest" ? "checked" : "" %>>
+                  <span class="auth-role-icon" aria-hidden="true">⌖</span>
+                  <span><strong>Guest</strong><small>Find your next stay</small></span>
+                </label>
+                <label class="auth-role-option" for="host">
+                  <input type="radio" name="userType" value="host" id="host"
+                    <%= oldInput.userType === "host" ? "checked" : "" %>>
+                  <span class="auth-role-icon" aria-hidden="true">⌂</span>
+                  <span><strong>Host</strong><small>Welcome your guests</small></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <label class="auth-terms" for="terms">
+              <input type="checkbox" name="terms" id="terms" required>
+              <span>I agree to the terms and conditions.</span>
+            </label>
+
+            <button type="submit" class="button-primary auth-submit">Create account <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="auth-switch">Already have an account? <a href="/login">Sign in <span aria-hidden="true">→</span></a></p>
+        </section>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
+    <script>
+      document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const input = document.getElementById(button.dataset.passwordToggle);
+          const showing = input.type === 'password';
+          input.type = showing ? 'text' : 'password';
+          button.textContent = showing ? 'Hide' : 'Show';
+          button.setAttribute('aria-label', `${showing ? 'Hide' : 'Show'} password`);
+        });
+      });
+    </script>
+  </body>
+</html>

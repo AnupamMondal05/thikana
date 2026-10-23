@@ -1,0 +1,8 @@
+<% if (errors && errors.length) { %>
+  <div class="form-errors" role="alert" aria-live="polite">
+    <strong>Please check the following:</strong>
+    <ul>
+      <% errors.forEach(error => { %><li><%= error %></li><% }) %>
+    </ul>
+  </div>
+<% } %>

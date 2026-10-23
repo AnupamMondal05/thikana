@@ -1,0 +1,193 @@
+<%- include('../partials/head') %>
+  </head>
+  <body class="homepage">
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto px-4">
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-content">
+          <div class="section-kicker hero-kicker">Discover your next getaway</div>
+          <h1 id="hero-heading">Come home to somewhere new.</h1>
+          <p>Discover welcoming stays, thoughtful spaces, and beautiful places that make every journey feel like your own.</p>
+          <form action="/homes" method="GET" class="discovery-search" role="search">
+            <label class="sr-only" for="hero-search">Search stays by destination or property name</label>
+            <span class="search-mark" aria-hidden="true">⌖</span>
+            <input id="hero-search" type="search" name="search" placeholder="Where would you like to go?" autocomplete="off">
+            <button type="submit" class="button-primary">Explore stays <span aria-hidden="true">→</span></button>
+          </form>
+          <a href="#why" class="hero-secondary-link">Discover Thikana <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-note"><span aria-hidden="true">✦</span> Find a place to slow down, settle in, and stay awhile.</div>
+      </section>
+
+      <section id="destinations" class="homepage-section destinations-section" aria-labelledby="destinations-heading">
+        <div class="section-intro">
+          <div>
+            <div class="section-kicker">India, your way</div>
+            <h2 id="destinations-heading" class="section-heading">Explore popular destinations</h2>
+            <p class="section-description">From peaceful mountain escapes to sun-kissed beaches, discover places worth travelling for.</p>
+          </div>
+          <a href="/homes" class="text-link">Explore all stays <span aria-hidden="true">→</span></a>
+        </div>
+
+        <div class="destination-grid">
+          <a class="destination-card destination-card-feature" href="/homes?search=Darjeeling">
+            <img src="/images/destinations/darjeeling.jpg" alt="Green hills and mountain scenery in Darjeeling" loading="lazy" width="960" height="1280">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">West Bengal</span><strong>Darjeeling</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+          <a class="destination-card destination-card-feature" href="/homes?search=Manali">
+            <img src="/images/destinations/manali.jpg" alt="Mountain landscape in Manali, Himachal Pradesh" loading="lazy" width="960" height="1280">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">Himachal Pradesh</span><strong>Manali</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+          <a class="destination-card" href="/homes?search=Goa">
+            <img src="/images/destinations/goa.jpg" alt="Palm-lined Anjuna beach in Goa" loading="lazy" width="960" height="640">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">Coastal escapes</span><strong>Goa</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+          <a class="destination-card" href="/homes?search=Jaipur">
+            <img src="/images/destinations/jaipur.jpg" alt="Hawa Mahal in Jaipur, Rajasthan" loading="lazy" width="960" height="960">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">Rajasthan</span><strong>Jaipur</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+          <a class="destination-card" href="/homes?search=Munnar">
+            <img src="/images/destinations/munnar.jpg" alt="Rolling tea plantations in Munnar, Kerala" loading="lazy" width="960" height="358">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">Kerala</span><strong>Munnar</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+          <a class="destination-card" href="/homes?search=Udaipur">
+            <img src="/images/destinations/udaipur.jpg" alt="Lake Pichola and the City Palace in Udaipur" loading="lazy" width="960" height="638">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">Rajasthan</span><strong>Udaipur</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+          <a class="destination-card" href="/homes?search=Rishikesh">
+            <img src="/images/destinations/rishikesh.jpg" alt="The Ganges and surrounding hills in Rishikesh" loading="lazy" width="960" height="643">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">Uttarakhand</span><strong>Rishikesh</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+          <a class="destination-card destination-card-wide" href="/homes?search=Sikkim">
+            <img src="/images/destinations/sikkim.jpg" alt="A North Sikkim village beneath the Kangchenjunga range" loading="lazy" width="960" height="538">
+            <span class="destination-overlay"></span>
+            <span class="destination-copy"><span class="destination-region">Himalayan villages</span><strong>Sikkim</strong><span class="destination-arrow" aria-hidden="true">↗</span></span>
+          </a>
+        </div>
+
+        <details class="image-credits">
+          <summary>Destination photography credits</summary>
+          <ul>
+            <li>Darjeeling — Syed Sajidul Islam, <a href="https://commons.wikimedia.org/wiki/File:Landscape_of_Darjeeling,India.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.</li>
+            <li>Manali — Rajani Gairshail, <a href="https://commons.wikimedia.org/wiki/File:Manali_(Himachal_Pradesh).jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.</li>
+            <li>Goa — Vyacheslav Argenberg, <a href="https://commons.wikimedia.org/wiki/File:Anjuna_Beach,_Goa,_India,_Legendary_Curlies_beach_shack.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.</li>
+            <li>Jaipur — Jakub Hałun, <a href="https://commons.wikimedia.org/wiki/File:20191218,_Hawa_Mahal_(The_Palace_of_Winds)_in_Jaipur,_1128_9119.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.</li>
+            <li>Munnar — Ingo Mehling, <a href="https://commons.wikimedia.org/wiki/File:Munnar_-_Tea_Plantations.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.</li>
+            <li>Udaipur — Jakub Hałun, <a href="https://commons.wikimedia.org/wiki/File:20191207_Lake_Pichola,_City_Palace,_Udaipur,_1516_7254.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.</li>
+            <li>Rishikesh — Arpan Mahajan, <a href="https://commons.wikimedia.org/wiki/File:Rishikesh_(Ganges_View).jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.</li>
+            <li>Sikkim — Debdas1973, <a href="https://commons.wikimedia.org/wiki/File:Sikkim_Village.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.</li>
+          </ul>
+        </details>
+      </section>
+
+      <section class="homepage-section featured-section" aria-labelledby="featured-heading">
+        <div class="section-intro">
+          <div>
+            <div class="section-kicker">Handpicked for you</div>
+            <h2 id="featured-heading" class="section-heading">Featured stays</h2>
+            <p class="section-description">Real homes, shared by hosts. Find the one that feels right for your next trip.</p>
+          </div>
+          <a href="/homes" class="text-link">View all stays <span aria-hidden="true">→</span></a>
+        </div>
+        <% if (!registeredHomes.length) { %>
+          <div class="empty-state">
+            <h3>New stays are on their way</h3>
+            <p class="property-meta">Explore all listings or check back soon for more places to stay.</p>
+            <a href="/homes" class="button-primary">Explore stays</a>
+          </div>
+        <% } else { %>
+          <div class="home-grid">
+            <% registeredHomes.forEach(home => {
+              const photo = home.photos && home.photos.length ? home.photos[0] : home.photo;
+              const isFavourite = user && user.userType === 'guest' && user.favourites &&
+                user.favourites.some(favourite => favourite.toString() === home._id.toString());
+            %>
+              <article class="property-card">
+                <a class="featured-image-link" href="/homes/<%= home._id %>" aria-label="View <%= home.houseName %>">
+                  <img src="<%= photo %>" alt="<%= home.houseName %>" class="property-image" loading="lazy">
+                </a>
+                <div class="property-card-body">
+                  <div class="featured-card-title">
+                    <h3><%= home.houseName %></h3>
+                    <% if (home.reviewSummary.count) { %><span class="rating" aria-label="Rating <%= home.reviewSummary.average %> out of 5 from <%= home.reviewSummary.count %> reviews">★ <%= home.reviewSummary.average %></span><% } %>
+                  </div>
+                  <p class="property-meta">⌖ <%= home.location %></p>
+                  <div class="featured-card-footer">
+                    <span class="property-price">₹<%= Number(home.price).toLocaleString('en-IN') %> <span class="property-meta font-normal">/ night</span></span>
+                    <a href="/homes/<%= home._id %>" class="text-link">View stay <span aria-hidden="true">→</span></a>
+                  </div>
+                  <% if (user && user.userType === 'guest') { %>
+                    <form action="<%= isFavourite ? `/favorite/delete/${home._id}` : '/favorite' %>" method="POST" class="homepage-favourite">
+                      <% if (!isFavourite) { %><input type="hidden" name="id" value="<%= home._id %>"><% } %>
+                      <input type="hidden" name="returnTo" value="/">
+                      <button type="submit"><%= isFavourite ? '♥ Saved to favourites' : '♡ Save this stay' %></button>
+                    </form>
+                  <% } %>
+                </div>
+              </article>
+            <% }) %>
+          </div>
+        <% } %>
+      </section>
+
+      <section id="experiences" class="homepage-section experiences-section" aria-labelledby="experiences-heading">
+        <div class="section-intro">
+          <div>
+            <div class="section-kicker">Find your own rhythm</div>
+            <h2 id="experiences-heading" class="section-heading">Find your kind of stay</h2>
+            <p class="section-description">Start with a place that matches the feeling you’re looking for.</p>
+          </div>
+        </div>
+        <div class="experience-grid">
+          <a class="experience-card" href="/homes?search=Manali"><img src="/images/destinations/manali.jpg" alt="" loading="lazy"><span class="experience-card-shade"></span><span class="experience-card-copy"><strong>Mountain retreats</strong><small>Browse stays around Manali</small><i aria-hidden="true">↗</i></span></a>
+          <a class="experience-card" href="/homes?search=Goa"><img src="/images/destinations/goa.jpg" alt="" loading="lazy"><span class="experience-card-shade"></span><span class="experience-card-copy"><strong>Beach escapes</strong><small>Explore stays in Goa</small><i aria-hidden="true">↗</i></span></a>
+          <a class="experience-card" href="/homes?search=Jaipur"><img src="/images/destinations/jaipur.jpg" alt="" loading="lazy"><span class="experience-card-shade"></span><span class="experience-card-copy"><strong>Heritage homes</strong><small>Discover stays in Jaipur</small><i aria-hidden="true">↗</i></span></a>
+          <a class="experience-card" href="/homes?search=Munnar"><img src="/images/destinations/munnar.jpg" alt="" loading="lazy"><span class="experience-card-shade"></span><span class="experience-card-copy"><strong>Nature getaways</strong><small>Find stays near Munnar</small><i aria-hidden="true">↗</i></span></a>
+          <a class="experience-card" href="/homes?search=Udaipur"><img src="/images/destinations/udaipur.jpg" alt="" loading="lazy"><span class="experience-card-shade"></span><span class="experience-card-copy"><strong>Romantic getaways</strong><small>Search stays in Udaipur</small><i aria-hidden="true">↗</i></span></a>
+          <a class="experience-card" href="/homes?search=Rishikesh"><img src="/images/destinations/rishikesh.jpg" alt="" loading="lazy"><span class="experience-card-shade"></span><span class="experience-card-copy"><strong>Peaceful weekends</strong><small>Explore stays in Rishikesh</small><i aria-hidden="true">↗</i></span></a>
+        </div>
+      </section>
+
+      <section id="why" class="homepage-section why-section" aria-labelledby="why-heading">
+        <div class="why-heading">
+          <div class="section-kicker">The Thikana feeling</div>
+          <h2 id="why-heading" class="section-heading">A better way to find your stay</h2>
+          <p class="section-description">Good journeys start with a place that feels right.</p>
+        </div>
+        <div class="home-benefits">
+          <article class="benefit"><span class="benefit-icon" aria-hidden="true">✦</span><h3>Discover places with character</h3><p>Explore welcoming homes and real listings shared by hosts.</p></article>
+          <article class="benefit"><span class="benefit-icon" aria-hidden="true">⌖</span><h3>Find a stay that fits</h3><p>Search by property or location, compare nightly prices, and explore the details.</p></article>
+          <article class="benefit"><span class="benefit-icon" aria-hidden="true">✓</span><h3>Plan with confidence</h3><p>Review property information, check dates, and manage bookings in one place.</p></article>
+          <article class="benefit"><span class="benefit-icon" aria-hidden="true">⌂</span><h3>For guests and hosts</h3><p>Book a place to stay or manage your own property through your account.</p></article>
+        </div>
+      </section>
+
+      <section class="editorial-panel" aria-labelledby="editorial-heading">
+        <img src="/images/thikana-auth.png" alt="A homestay nestled in green mountain scenery" loading="lazy" width="1024" height="576">
+        <div class="editorial-copy">
+          <div class="section-kicker">Stay a little differently</div>
+          <h2 id="editorial-heading">Made for meaningful getaways.</h2>
+          <p>Take the scenic route. Find a place to settle in. Make the next trip your own.</p>
+          <a href="/homes" class="text-link">Find your next stay <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+
+      <section class="host-cta">
+        <div>
+          <div class="section-kicker">Share your space</div>
+          <h2>Have a place people will love?</h2>
+          <p>Welcome guests and turn your home into someone’s favourite stay.</p>
+        </div>
+        <a href="<%= isLoggedIn && user && user.userType === 'host' ? '/host/add-home' : '/signup' %>" class="button-secondary">Become a host <span aria-hidden="true">→</span></a>
+      </section>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

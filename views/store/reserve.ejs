@@ -1,0 +1,97 @@
+﻿<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto mt-10 max-w-4xl px-4">
+      <div class="bg-white rounded-xl shadow-md p-8">
+        <h1 class="section-heading mb-6">Your stay</h1>
+
+        <% if (errorMessage) { %>
+          <div class="mb-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+            <%= errorMessage %>
+          </div>
+        <% } %>
+
+        <div class="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
+          <div class="space-y-5">
+            <div>
+              <h2 class="text-2xl font-semibold text-gray-800"><%= home.houseName %></h2>
+              <p class="text-gray-600"><%= home.location %></p>
+            </div>
+
+            <form action="/bookings/new/<%= home._id %>" method="GET" class="grid gap-4 md:grid-cols-3" id="availability-form">
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Check-in</label>
+                <input type="date" name="checkIn" value="<%= formData.checkIn %>" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500" required />
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Check-out</label>
+                <input type="date" name="checkOut" value="<%= formData.checkOut %>" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500" required />
+              </div>
+              <div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Guests</label>
+                <input type="number" name="guests" min="1" max="<%= home.maxGuests || 2 %>" value="<%= formData.guests %>" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500" required />
+              </div>
+              <div class="md:col-span-3">
+                <button type="submit" class="button-primary">Check Availability</button>
+              </div>
+            </form>
+          </div>
+
+          <% if (summary) { %>
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-5">
+              <h3 class="text-xl font-semibold text-gray-800 mb-4">Reservation</h3>
+              <div class="space-y-3 text-sm text-gray-700">
+                <div class="flex justify-between">
+                  <span><%= home.houseName %></span>
+                  <span><%= formatCurrency(home.price) %> × <%= summary.nights %> nights</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Guests</span>
+                  <span><%= summary.guests %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Check-in</span>
+                  <span><%= summary.checkIn.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Check-out</span>
+                  <span><%= summary.checkOut.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+                </div>
+                <div class="border-t border-gray-200 pt-3 mt-3 flex justify-between text-base font-bold text-gray-900">
+                  <span>Total</span>
+                  <span><%= summary.formattedPrice %></span>
+                </div>
+              </div>
+
+              <form action="/bookings" method="POST" class="mt-6">
+                <input type="hidden" name="homeId" value="<%= home._id %>" />
+                <input type="hidden" name="checkIn" value="<%= formData.checkIn %>" />
+                <input type="hidden" name="checkOut" value="<%= formData.checkOut %>" />
+                <input type="hidden" name="guests" value="<%= formData.guests %>" />
+                <button type="submit" class="button-primary w-full">Confirm Booking</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </main>
+    <script>
+      const dateForm = document.getElementById('availability-form');
+      const checkIn = dateForm.querySelector('input[name="checkIn"]');
+      const checkOut = dateForm.querySelector('input[name="checkOut"]');
+      const localDate = new Date();
+      const today = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      checkIn.min = today;
+      const updateCheckoutMinimum = () => {
+        if (!checkIn.value) return;
+        const nextDay = new Date(`${checkIn.value}T00:00:00`);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkOut.min = nextDay.toISOString().slice(0, 10);
+      };
+      checkIn.addEventListener('change', updateCheckoutMinimum);
+      updateCheckoutMinimum();
+    </script>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto p-8 mt-10 max-w-6xl">
+      <div class="mb-10"><div class="section-kicker">Saved for later</div><h2 class="section-heading">Your favourite stays</h2><p class="text-gray-600">Keep the places that caught your eye close at hand.</p></div>
+      <% if (!favouriteHomes.length) { %><div class="empty-state"><h3>No saved stays yet</h3><p class="property-meta">Save homes you love and find them here later.</p><a href="/homes" class="button-primary">Explore stays</a></div><% } %>
+      <div class="home-grid">
+        <% favouriteHomes.forEach(home => { %>
+          <div class="property-card">
+            <a href="/homes/<%= home._id %>"><img src="<%= (home.photos && home.photos.length ? home.photos[0] : home.photo) %>" alt="<%= home.houseName %>" class="property-image" loading="lazy"></a>
+            <div class="property-card-body">
+              <h3><%= home.houseName %></h3>
+              <p class="property-meta mb-3">⌖ <%= home.location %></p>
+              <div class="flex justify-between items-center mb-2">
+                <span class="property-price">₹<%= home.price %> <span class="property-meta font-normal">/ night</span></span>
+                <% if (home.reviewSummary.count) { %><span class="rating" aria-label="Rating <%= home.reviewSummary.average %> out of 5 from <%= home.reviewSummary.count %> reviews">★ <%= home.reviewSummary.average %></span><% } %>
+              </div>
+              <form action="/favorite/delete/<%= home._id %>" method="POST">
+                <button class="button-secondary" style="padding:9px 13px;font-size:.85rem" type="submit">Remove from favourites</button>
+              </form>
+              <a class="profile-link" href="/homes/<%= home._id %>">View stay →</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

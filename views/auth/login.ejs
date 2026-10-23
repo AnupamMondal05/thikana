@@ -1,0 +1,59 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="auth-page">
+      <div class="auth-layout auth-layout-login">
+        <section class="auth-visual" aria-label="A welcoming home away from home">
+          <img src="/images/thikana-auth.png" alt="A mountain homestay overlooking a green valley at sunset" fetchpriority="high">
+          <div class="auth-visual-shade"></div>
+          <div class="auth-visual-content">
+            <span class="auth-photo-label"><span aria-hidden="true">✦</span> STAYS THAT FEEL LIKE YOURS</span>
+            <h1>Every journey deserves a place to belong.</h1>
+            <p>Find a thoughtful stay for wherever life takes you next.</p>
+            <div class="auth-visual-footer"><span class="auth-visual-mark" aria-hidden="true">⌂</span><span>Thikana <i>·</i> Find Your Next Stay.</span></div>
+          </div>
+        </section>
+
+        <section class="auth-form-panel" aria-labelledby="login-heading">
+          <div class="auth-form-heading">
+            <span class="auth-eyebrow">WELCOME BACK</span>
+            <h2 id="login-heading">Good to have you back.</h2>
+            <p>Sign in to pick up where your next adventure begins.</p>
+          </div>
+          <form action="/login" method="POST" class="auth-form">
+            <%- include('../partials/errors') %>
+            <label for="login-email">Email address</label>
+            <input id="login-email" type="email" name="email" placeholder="you@example.com"
+              value="<%= oldInput.email || '' %>" autocomplete="email" required>
+
+            <div class="auth-field-heading">
+              <label for="login-password">Password</label>
+            </div>
+            <div class="auth-password-field">
+              <input id="login-password" type="password" name="password" placeholder="Enter your password"
+                autocomplete="current-password" required>
+              <button type="button" class="password-toggle" data-password-toggle="login-password" aria-label="Show password">Show</button>
+            </div>
+
+            <button type="submit" class="button-primary auth-submit">Sign in <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="auth-switch">New to Thikana? <a href="/signup">Create your account <span aria-hidden="true">→</span></a></p>
+          <div class="auth-assurance"><span aria-hidden="true">⌑</span> Your account and bookings stay private.</div>
+        </section>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
+    <script>
+      document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const input = document.getElementById(button.dataset.passwordToggle);
+          const showing = input.type === 'password';
+          input.type = showing ? 'text' : 'password';
+          button.textContent = showing ? 'Hide' : 'Show';
+          button.setAttribute('aria-label', `${showing ? 'Hide' : 'Show'} password`);
+        });
+      });
+    </script>
+  </body>
+</html>

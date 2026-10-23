@@ -1,0 +1,162 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto property-detail-page">
+      <% const gallery = home.photos && home.photos.length ? home.photos : [home.photo]; %>
+      <div class="detail-heading">
+        <div><div class="section-kicker">Your next stay</div><h1><%= home.houseName %></h1><p class="property-meta">⌖ <%= home.location %><% if (reviewSummary.count) { %> · <a class="detail-rating-link" href="#reviews"><span class="rating">★ <%= reviewSummary.average %></span> (<%= reviewSummary.count %> <%= reviewSummary.count === 1 ? 'review' : 'reviews' %>)</a><% } %></p></div>
+        <span class="image-count"><span id="image-number">1</span> / <%= gallery.length %></span>
+      </div>
+      <section class="gallery-layout">
+        <div class="gallery-main">
+          <img id="main-gallery-image" src="<%= gallery[0] %>" alt="<%= home.houseName %>" fetchpriority="high">
+          <% if (gallery.length > 1) { %>
+            <button class="gallery-control gallery-prev" type="button" aria-label="Previous image">‹</button>
+            <button class="gallery-control gallery-next" type="button" aria-label="Next image">›</button>
+          <% } %>
+        </div>
+        <% if (gallery.length > 1) { %>
+          <div class="gallery-thumbnails">
+            <% gallery.forEach((photo, index) => { %><button type="button" class="gallery-thumb <%= index === 0 ? 'selected' : '' %>" data-index="<%= index %>"><img src="<%= photo %>" alt="Photo <%= index + 1 %>"></button><% }) %>
+          </div>
+        <% } %>
+      </section>
+      <div class="detail-columns">
+        <article class="detail-copy">
+          <% if (home.owner) { %><div class="detail-host-row"><div class="avatar avatar-large"><%= home.owner.firstName ? home.owner.firstName.charAt(0) : 'T' %></div><div><strong><%= home.owner.firstName %> <%= home.owner.lastName || '' %></strong><p class="property-meta">Host</p></div></div><% } %>
+          <h2>About this stay</h2><p><%= home.description || 'The host has not added a description for this stay yet.' %></p>
+          <div class="detail-facts"><span>♧ Up to <strong><%= home.maxGuests || 2 %></strong> guests</span><% if (reviewSummary.count) { %><span>★ <strong><%= reviewSummary.average %></strong> from <%= reviewSummary.count %> guest reviews</span><% } %></div>
+        </article>
+        <aside class="booking-card">
+          <div class="booking-price"><strong>₹<%= Number(home.price).toLocaleString('en-IN') %></strong> <span>/ night</span></div>
+          <% if (isLoggedIn && user && user.userType === 'host') { %>
+            <p class="property-meta">Bookings are available to guest accounts.</p>
+          <% } else { %>
+            <form action="/bookings/new/<%= home._id %>" method="GET">
+              <div class="date-grid"><label>Check-in<input type="date" name="checkIn" required></label><label>Check-out<input type="date" name="checkOut" required></label></div>
+              <label>Guests<input type="number" name="guests" min="1" max="<%= home.maxGuests || 2 %>" value="1" required></label>
+              <button type="submit" class="button-primary w-full">Reserve this stay</button>
+            </form>
+          <% } %>
+          <% if (user && user.userType === 'guest') { %>
+            <%- include('../partials/favourite',{home: home}) %>
+          <% } else if (!isLoggedIn) { %>
+            <a href="/login" class="profile-link">Sign in to save this stay →</a>
+          <% } %>
+        </aside>
+      </div>
+      <section id="reviews" class="property-reviews-section" aria-labelledby="reviews-heading">
+        <div class="reviews-section-heading">
+          <div>
+            <div class="section-kicker">Guest feedback</div>
+            <h2 id="reviews-heading" class="section-heading">Reviews<% if (reviewSummary.count) { %> <span class="reviews-total-count">(<%= reviewSummary.count %>)</span><% } %></h2>
+          </div>
+          <% if (reviewSummary.count) { %>
+            <div class="reviews-overall" aria-label="Average rating <%= reviewSummary.average %> out of 5">
+              <span class="review-stars"><%= '★'.repeat(Math.round(reviewSummary.average)) %><span class="review-stars-empty"><%= '★'.repeat(5 - Math.round(reviewSummary.average)) %></span></span>
+              <strong><%= reviewSummary.average %></strong><span>out of 5</span>
+            </div>
+          <% } %>
+        </div>
+
+        <% if (reviewStatus) { %>
+          <div class="review-alert review-alert-success" role="status">
+            <%= reviewStatus === 'submitted' ? 'Thank you for sharing your experience.' : reviewStatus === 'updated' ? 'Your review has been updated.' : 'Your review has been removed.' %>
+          </div>
+        <% } %>
+
+        <% if (!reviewSummary.count) { %>
+          <div class="review-empty-state">
+            <span class="review-empty-star" aria-hidden="true">☆</span>
+            <h3>No reviews yet</h3>
+            <p>Be the first guest to share what staying here is like.</p>
+          </div>
+        <% } else { %>
+          <div class="reviews-layout">
+            <div class="rating-breakdown" aria-label="Rating distribution">
+              <% [5, 4, 3, 2, 1].forEach(star => {
+                const count = reviewSummary.distribution[star];
+                const percent = reviewSummary.count ? Math.round(count / reviewSummary.count * 100) : 0;
+              %>
+                <div class="rating-breakdown-row">
+                  <span><%= star %> <span aria-hidden="true">★</span></span>
+                  <div class="rating-breakdown-track"><span style="width:<%= percent %>%"></span></div>
+                  <span class="rating-breakdown-count"><%= count %></span>
+                </div>
+              <% }) %>
+            </div>
+
+            <div class="review-list">
+              <% reviews.forEach(review => { %>
+                <article id="review-<%= review._id %>" class="review-card">
+                  <div class="review-card-top">
+                    <div>
+                      <p class="review-author"><%= review.author ? review.author.firstName : 'Thikana guest' %></p>
+                      <time datetime="<%= new Date(review.createdAt).toISOString() %>"><%= new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></time>
+                    </div>
+                    <span class="review-stars" aria-label="<%= review.rating %> out of 5 stars"><%= '★'.repeat(review.rating) %><span class="review-stars-empty"><%= '★'.repeat(5 - review.rating) %></span></span>
+                  </div>
+                  <p class="review-card-comment"><%= review.comment %></p>
+                  <% if (review.cleanliness || review.location || review.comfort || review.value) { %>
+                    <div class="review-categories">
+                      <% [['cleanliness', 'Cleanliness'], ['location', 'Location'], ['comfort', 'Comfort'], ['value', 'Value']].forEach(([key, label]) => { if (review[key]) { %>
+                        <span><%= label %> <strong><%= review[key] %>/5</strong></span>
+                      <% } }) %>
+                    </div>
+                  <% } %>
+                  <% if (user && review.author && user._id.toString() === review.author._id.toString()) { %>
+                    <div class="review-owner-actions">
+                      <a href="/reviews/<%= review._id %>/edit">Edit review</a>
+                      <form action="/reviews/<%= review._id %>/delete" method="POST" onsubmit="return confirm('Delete your review? This cannot be undone.')">
+                        <input type="hidden" name="_csrf" value="<%= reviewCsrfToken %>">
+                        <button type="submit">Delete</button>
+                      </form>
+                    </div>
+                  <% } %>
+                </article>
+              <% }) %>
+            </div>
+          </div>
+
+          <% if (totalReviewPages > 1) { %>
+            <nav class="review-pagination" aria-label="Review pages">
+              <% if (currentReviewPage > 1) { %><a href="?page=<%= currentReviewPage - 1 %>#reviews" rel="prev">← Newer reviews</a><% } else { %><span></span><% } %>
+              <span>Page <%= currentReviewPage %> of <%= totalReviewPages %></span>
+              <% if (currentReviewPage < totalReviewPages) { %><a href="?page=<%= currentReviewPage + 1 %>#reviews" rel="next">Older reviews →</a><% } %>
+            </nav>
+          <% } %>
+        <% } %>
+      </section>
+    </main>
+    <script>
+      const galleryImages = <%- JSON.stringify(gallery) %>;
+      let activeImage = 0;
+      const image = document.getElementById('main-gallery-image');
+      const counter = document.getElementById('image-number');
+      const setImage = (index) => {
+        activeImage = (index + galleryImages.length) % galleryImages.length;
+        image.src = galleryImages[activeImage];
+        counter.textContent = activeImage + 1;
+        document.querySelectorAll('.gallery-thumb').forEach((thumb, i) => thumb.classList.toggle('selected', i === activeImage));
+      };
+      document.querySelector('.gallery-prev')?.addEventListener('click', () => setImage(activeImage - 1));
+      document.querySelector('.gallery-next')?.addEventListener('click', () => setImage(activeImage + 1));
+      document.querySelectorAll('.gallery-thumb').forEach((thumb) => thumb.addEventListener('click', () => setImage(Number(thumb.dataset.index))));
+    </script>
+    <script>
+      const checkInInput = document.querySelector('input[name="checkIn"]');
+      const checkOutInput = document.querySelector('input[name="checkOut"]');
+      const now = new Date();
+      checkInInput.min = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      checkInInput.addEventListener('change', () => {
+        if (checkInInput.value) {
+          const nextDay = new Date(`${checkInInput.value}T00:00:00`);
+          nextDay.setDate(nextDay.getDate() + 1);
+          checkOutInput.min = nextDay.toISOString().slice(0, 10);
+        }
+      });
+    </script>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto p-8 mt-10 max-w-6xl">
+      <div class="mb-10">
+        <div class="section-kicker">Host workspace</div>
+        <h1 class="section-heading"><%= editing ? 'Edit' : 'Register' %> your property</h1>
+        <p class="text-gray-600">Help guests discover what makes your space special.</p>
+      </div>
+      <form action="/host/<%= editing ? 'edit-home' : 'add-home' %>" method="POST" enctype="multipart/form-data" class="property-form">
+        <input type="hidden" name="id" value="<%= editing ? home._id : '' %>" />
+        <label>Property name
+          <input type="text" name="houseName" value="<%= editing ? home.houseName : '' %>" maxlength="120" required />
+        </label>
+        <label>Price per night (₹)
+          <input type="number" name="price" value="<%= editing ? home.price : '' %>" min="1" step="1" required />
+        </label>
+        <label>Location
+          <input type="text" name="location" value="<%= editing ? home.location : '' %>" maxlength="120" required />
+        </label>
+        <label>Rating (0–5)
+          <input type="number" name="rating" value="<%= editing ? home.rating : '' %>" min="0" max="5" step="0.1" required />
+        </label>
+        <label>Maximum guests
+          <input type="number" min="1" max="100" name="maxGuests" value="<%= editing ? (home.maxGuests || 2) : 2 %>" required />
+        </label>
+        <% if (editing) {
+          const currentPhotos = home.photos && home.photos.length ? home.photos : (home.photo ? [home.photo] : []);
+          if (currentPhotos.length) { %>
+            <div class="current-photos">
+              <strong>Current photos (<%= currentPhotos.length %> of 8)</strong>
+              <div class="current-photo-grid">
+                <% currentPhotos.forEach((photo, index) => { %><img src="<%= photo %>" alt="<%= home.houseName %>, photo <%= index + 1 %>" loading="lazy"><% }) %>
+              </div>
+            </div>
+        <% } } %>
+        <label class="upload-dropzone" for="property-photos">
+          <strong><%= editing ? 'Add property photos' : 'Property photos' %></strong>
+          <span>Select multiple images at once or add them in batches. A property can have up to 8 photos total; each new JPG or PNG must be no larger than 5 MB. New photos are added to the current set.</span>
+          <input id="property-photos" type="file" name="photos" accept=".jpg,.jpeg,.png,image/jpeg,image/png" multiple <%= editing ? '' : 'required' %> />
+        </label>
+        <p id="photo-selection-status" class="photo-selection-status" aria-live="polite"><%= editing ? `${(home.photos && home.photos.length ? home.photos.length : (home.photo ? 1 : 0))} of 8 current photos` : '' %></p>
+        <div id="photo-preview" class="photo-preview" aria-live="polite"></div>
+        <label>About this property
+          <textarea name="description" maxlength="2000" placeholder="Describe your home"><%= editing ? home.description || '' : '' %></textarea>
+        </label>
+        <input type="submit" value="<%= editing ? 'Save changes' : 'Add property' %>" class="button-primary" />
+      </form>
+    </main>
+    <script>
+      const photoInput = document.getElementById('property-photos');
+      const preview = document.getElementById('photo-preview');
+      const selectionStatus = document.getElementById('photo-selection-status');
+      const currentPhotoCount = <%= editing ? (home.photos && home.photos.length ? home.photos.length : (home.photo ? 1 : 0)) : 0 %>;
+      const maxPropertyPhotos = 8;
+      if (photoInput && preview) {
+        let selectedFiles = Array.from(photoInput.files);
+        let previewUrls = [];
+        const syncFileInput = () => {
+          const transfer = new DataTransfer();
+          selectedFiles.forEach(file => transfer.items.add(file));
+          photoInput.files = transfer.files;
+        };
+        const renderPreviews = () => {
+          previewUrls.forEach(url => URL.revokeObjectURL(url));
+          previewUrls = [];
+          preview.replaceChildren();
+          selectedFiles.forEach((file, index) => {
+            const item = document.createElement('div');
+            item.className = 'photo-preview-item';
+            const image = document.createElement('img');
+            image.alt = `Selected property photo ${index + 1}`;
+            const url = URL.createObjectURL(file);
+            previewUrls.push(url);
+            image.src = url;
+            const label = document.createElement('span');
+            label.textContent = `${index + 1}. ${file.name}`;
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'photo-remove';
+            removeButton.setAttribute('aria-label', `Remove ${file.name}`);
+            removeButton.textContent = '×';
+            removeButton.addEventListener('click', () => {
+              selectedFiles = selectedFiles.filter((_, fileIndex) => fileIndex !== index);
+              syncFileInput();
+              selectionStatus.textContent = selectedFiles.length ? `${selectedFiles.length} photo${selectedFiles.length === 1 ? '' : 's'} selected.` : 'No new photos selected.';
+              renderPreviews();
+            });
+            item.append(image, label, removeButton);
+            preview.appendChild(item);
+          });
+        };
+        photoInput.addEventListener('change', () => {
+          const newFiles = Array.from(photoInput.files);
+          const existingKeys = new Set(selectedFiles.map(file => `${file.name}:${file.size}:${file.lastModified}`));
+          const additionalFiles = newFiles.filter(file => !existingKeys.has(`${file.name}:${file.size}:${file.lastModified}`));
+          const remainingSlots = Math.max(0, maxPropertyPhotos - currentPhotoCount - selectedFiles.length);
+          selectedFiles = [...selectedFiles, ...additionalFiles.slice(0, remainingSlots)];
+          const rejectedCount = additionalFiles.length - Math.max(remainingSlots, 0);
+          if (rejectedCount > 0) {
+            selectionStatus.textContent = `A property can have up to ${maxPropertyPhotos} photos. ${rejectedCount} additional photo${rejectedCount === 1 ? ' was' : 's were'} not added.`;
+          } else {
+            const totalPhotos = currentPhotoCount + selectedFiles.length;
+            selectionStatus.textContent = `${totalPhotos} of ${maxPropertyPhotos} photos selected${selectedFiles.length ? ` (${selectedFiles.length} new)` : ''}.`;
+          }
+          syncFileInput();
+          renderPreviews();
+        });
+      }
+    </script>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

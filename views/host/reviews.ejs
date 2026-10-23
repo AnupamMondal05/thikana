@@ -1,0 +1,50 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto host-reviews-page">
+      <div class="section-kicker">Your guests’ stories</div>
+      <h1 class="section-heading">Guest feedback</h1>
+      <p class="section-description host-reviews-intro">Reviews from guests who stayed at your properties.</p>
+      <a href="/host/bookings" class="text-link host-reviews-back">← Back to hosting overview</a>
+
+      <% if (!reviews.length) { %>
+        <div class="empty-state host-reviews-empty">
+          <h2>No guest reviews yet</h2>
+          <p class="property-meta">When guests share feedback about your stays, it will appear here.</p>
+        </div>
+      <% } else { %>
+        <section class="host-review-list" aria-label="Guest reviews">
+          <% reviews.forEach(review => { %>
+            <article class="review-card">
+              <div class="review-card-top">
+                <div>
+                  <p class="review-property-name"><%= review.home ? review.home.houseName : 'Property unavailable' %></p>
+                  <p class="review-author"><%= review.author ? review.author.firstName : 'Thikana guest' %> · <%= new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+                </div>
+                <span class="review-stars" aria-label="<%= review.rating %> out of 5 stars"><%= '★'.repeat(review.rating) %><span class="review-stars-empty"><%= '★'.repeat(5 - review.rating) %></span></span>
+              </div>
+              <p class="review-card-comment"><%= review.comment %></p>
+              <% if (review.cleanliness || review.location || review.comfort || review.value) { %>
+                <div class="review-categories">
+                  <% [['cleanliness', 'Cleanliness'], ['location', 'Location'], ['comfort', 'Comfort'], ['value', 'Value']].forEach(([key, label]) => { if (review[key]) { %>
+                    <span><%= label %> <strong><%= review[key] %>/5</strong></span>
+                  <% } }) %>
+                </div>
+              <% } %>
+              <% if (review.home) { %><a href="/homes/<%= review.home._id %>#reviews" class="review-property-link">View this property’s reviews →</a><% } %>
+            </article>
+          <% }) %>
+        </section>
+        <% if (totalPages > 1) { %>
+          <nav class="review-pagination" aria-label="Review pages">
+            <% if (currentPageNumber > 1) { %><a href="?page=<%= currentPageNumber - 1 %>" rel="prev">← Newer reviews</a><% } %>
+            <span>Page <%= currentPageNumber %> of <%= totalPages %></span>
+            <% if (currentPageNumber < totalPages) { %><a href="?page=<%= currentPageNumber + 1 %>" rel="next">Older reviews →</a><% } %>
+          </nav>
+        <% } %>
+      <% } %>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

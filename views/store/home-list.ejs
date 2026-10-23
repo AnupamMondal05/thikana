@@ -1,0 +1,77 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto p-8 mt-10 max-w-6xl">
+      <div class="mb-8">
+        <div class="section-kicker">Explore the collection</div>
+        <h1 class="section-heading">Stays made for your next story</h1>
+        <p class="text-gray-600">Search real listings by name or location, and shape your stay around your budget.</p>
+      </div>
+
+      <form action="/homes" method="GET" class="filter-panel" role="search">
+        <label>Property or location
+          <input type="search" name="search" value="<%= filters.search %>" placeholder="Try a city or property name" />
+        </label>
+        <label>Minimum per night
+          <input type="number" name="minPrice" min="0" step="1" value="<%= filters.minPrice %>" placeholder="Any" />
+        </label>
+        <label>Maximum per night
+          <input type="number" name="maxPrice" min="0" step="1" value="<%= filters.maxPrice %>" placeholder="Any" />
+        </label>
+        <label>Sort by
+          <select name="sort">
+            <option value="newest" <%= filters.sort === 'newest' ? 'selected' : '' %>>Newest</option>
+            <option value="price-asc" <%= filters.sort === 'price-asc' ? 'selected' : '' %>>Price: low to high</option>
+            <option value="price-desc" <%= filters.sort === 'price-desc' ? 'selected' : '' %>>Price: high to low</option>
+          </select>
+        </label>
+        <button class="button-primary" type="submit">Apply filters</button>
+        <a class="filter-reset" href="/homes">Reset</a>
+      </form>
+
+      <% if (filterError) { %>
+        <p class="mb-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-700" role="alert"><%= filterError %></p>
+      <% } %>
+
+      <% if (!registeredHomes.length) { %>
+        <div class="empty-state">
+          <h2>No stays match these filters</h2>
+          <p class="property-meta">Try changing your search or resetting the filters to explore all available homes.</p>
+          <a href="/homes" class="button-primary">Clear filters</a>
+        </div>
+      <% } else { %>
+        <div class="home-grid">
+          <% registeredHomes.forEach(home => {
+            const photo = home.photos && home.photos.length ? home.photos[0] : home.photo;
+            const isFavourite = user && user.favourites && user.favourites.some(favourite => favourite.toString() === home._id.toString());
+          %>
+            <article class="property-card">
+              <a href="/homes/<%= home._id %>" aria-label="View <%= home.houseName %>">
+                <img src="<%= photo %>" alt="<%= home.houseName %>" class="property-image" loading="lazy">
+              </a>
+              <div class="property-card-body">
+                <div class="flex justify-between items-start gap-3">
+                  <h2><%= home.houseName %></h2>
+                  <% if (home.reviewSummary.count) { %><span class="rating" aria-label="Rating <%= home.reviewSummary.average %> out of 5 from <%= home.reviewSummary.count %> reviews">★ <%= home.reviewSummary.average %></span><% } %>
+                </div>
+                <p class="property-meta mb-4">⌖ <%= home.location %></p>
+                <div class="flex items-center justify-between gap-3">
+                  <span class="property-price">₹<%= Number(home.price).toLocaleString('en-IN') %> <span class="property-meta font-normal">/ night</span></span>
+                  <a href="/homes/<%= home._id %>" class="button-primary" style="padding:9px 13px;font-size:.85rem">View stay</a>
+                </div>
+                <% if (user && user.userType === 'guest') { %>
+                  <form action="<%= isFavourite ? `/favorite/delete/${home._id}` : '/favorite' %>" method="POST" class="inline-favourite">
+                    <% if (!isFavourite) { %><input type="hidden" name="id" value="<%= home._id %>"><% } %>
+                    <button type="submit" aria-label="<%= isFavourite ? 'Remove from favourites' : 'Add to favourites' %>"><%= isFavourite ? '♥ Saved' : '♡ Save stay' %></button>
+                  </form>
+                <% } %>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      <% } %>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

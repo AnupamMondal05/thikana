@@ -1,0 +1,18 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto profile-page">
+      <section class="profile-hero">
+        <div class="avatar avatar-xl"><%= user.firstName.charAt(0) %><%= user.lastName ? user.lastName.charAt(0) : '' %></div>
+        <div><div class="section-kicker"><%= user.userType === 'host' ? 'Host workspace' : 'Your Thikana account' %></div><h1><%= user.firstName %> <%= user.lastName || '' %></h1><p><%= user.email %></p></div>
+      </section>
+      <div class="profile-grid">
+        <section class="profile-panel"><h2>Account details</h2><div class="profile-detail"><span>First name</span><strong><%= user.firstName %></strong></div><div class="profile-detail"><span>Last name</span><strong><%= user.lastName || 'Not provided' %></strong></div><div class="profile-detail"><span>Account type</span><strong><%= user.userType === 'host' ? 'Host' : 'Guest' %></strong></div><form action="/logout" method="POST"><button class="button-secondary" type="submit">Log out</button></form></section>
+        <section class="profile-panel"><% if (user.userType === 'host') { %><h2>Your hosting snapshot</h2><div class="profile-stat"><strong><%= listings.length %></strong><span>listed propert<%= listings.length === 1 ? 'y' : 'ies' %></span></div><a class="button-primary" href="/host/add-home">Add a property</a><a class="profile-link" href="/host/host-home-list">Manage listings →</a><% } else { %><h2>Your travel snapshot</h2><div class="profile-stat"><strong><%= user.favourites.length %></strong><span>saved stays</span></div><a class="button-primary" href="/favorite">View favourites</a><a class="profile-link" href="/bookings">View all bookings →</a><% } %></section>
+      </div>
+      <% if (user.userType === 'host') { %><section><div class="section-kicker">Your collection</div><h2 class="section-heading">Listed properties</h2><div class="home-grid"><% listings.forEach(home => { %><article class="property-card"><img class="property-image" src="<%= home.photos && home.photos.length ? home.photos[0] : home.photo %>" alt="<%= home.houseName %>"><div class="property-card-body"><h3><%= home.houseName %></h3><p class="property-meta"><%= home.location %> · ₹<%= home.price %>/night</p></div></article><% }) %></div></section><% } else if (bookings.length) { %><section><div class="section-kicker">Your journeys</div><h2 class="section-heading">Recent bookings</h2><div class="home-grid"><% bookings.forEach(booking => { %><article class="profile-booking"><h3><%= booking.home ? booking.home.houseName : 'Property unavailable' %></h3><p class="property-meta"><%= booking.home ? booking.home.location : 'The original property listing is no longer available.' %></p><a class="profile-link" href="/bookings/<%= booking._id %>">View booking →</a></article><% }) %></div></section><% } %>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

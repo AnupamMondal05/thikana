@@ -1,0 +1,76 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto review-form-page">
+      <a href="/bookings/<%= booking._id %>" class="text-link review-back-link">← Back to booking</a>
+      <section class="review-form-card">
+        <div class="section-kicker"><%= review ? 'Your feedback' : 'Your stay, your words' %></div>
+        <h1 class="section-heading"><%= review ? 'Edit your review' : 'How was your stay?' %></h1>
+        <p class="review-form-property"><strong><%= booking.home.houseName %></strong><span><%= booking.home.location %></span></p>
+        <p class="review-form-dates">
+          <%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+          – <%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+        </p>
+
+        <% if (errorMessage) { %>
+          <div class="review-alert review-alert-error" role="alert"><%= errorMessage %></div>
+        <% } %>
+
+        <form action="<%= review ? `/reviews/${review._id}/edit` : `/bookings/${booking._id}/review` %>" method="POST" class="review-form">
+          <input type="hidden" name="_csrf" value="<%= reviewCsrfToken %>">
+          <fieldset class="overall-rating-field">
+            <legend>Overall experience <span aria-hidden="true">*</span></legend>
+            <div class="star-choice" role="radiogroup" aria-label="Overall rating, 1 to 5 stars">
+              <% [5, 4, 3, 2, 1].forEach(star => { %>
+                <input type="radio" id="overall-rating-<%= star %>" name="rating" value="<%= star %>" required <%= String(formData.rating) === String(star) ? 'checked' : '' %>>
+                <label for="overall-rating-<%= star %>" aria-label="<%= star %> out of 5 stars" title="<%= star %> out of 5 stars">★</label>
+              <% }) %>
+            </div>
+            <span class="rating-hint">Select a rating from 1 to 5 stars</span>
+          </fieldset>
+
+          <label class="review-comment-label" for="review-comment">
+            Your feedback
+            <textarea id="review-comment" name="comment" minlength="10" maxlength="2000" required rows="6" placeholder="What made your stay special? What should future guests know?"><%= formData.comment %></textarea>
+          </label>
+          <div class="review-character-count"><span id="review-character-count"><%= String(formData.comment).length %></span> / 2000 characters</div>
+
+          <fieldset class="category-rating-field">
+            <legend>Rate the details <span>(optional)</span></legend>
+            <div class="category-rating-grid">
+              <% [
+                ['cleanliness', 'Cleanliness'],
+                ['location', 'Location'],
+                ['comfort', 'Comfort'],
+                ['value', 'Value']
+              ].forEach(([name, label]) => { %>
+                <label for="rating-<%= name %>"><%= label %>
+                  <select id="rating-<%= name %>" name="<%= name %>">
+                    <option value="">Not rated</option>
+                    <% [1, 2, 3, 4, 5].forEach(star => { %>
+                      <option value="<%= star %>" <%= String(formData[name]) === String(star) ? 'selected' : '' %>><%= star %> <%= star === 1 ? 'star' : 'stars' %></option>
+                    <% }) %>
+                  </select>
+                </label>
+              <% }) %>
+            </div>
+          </fieldset>
+
+          <div class="review-form-actions">
+            <a href="/bookings/<%= booking._id %>" class="review-cancel-link">Cancel</a>
+            <button type="submit" class="button-primary"><%= review ? 'Save changes' : 'Submit review' %></button>
+          </div>
+        </form>
+      </section>
+    </main>
+    <script>
+      const reviewComment = document.getElementById('review-comment');
+      const reviewCount = document.getElementById('review-character-count');
+      reviewComment.addEventListener('input', () => {
+        reviewCount.textContent = reviewComment.value.length;
+      });
+    </script>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

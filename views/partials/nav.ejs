@@ -1,0 +1,42 @@
+<header class="site-header">
+  <nav class="site-nav container mx-auto">
+    <a href="/" class="brand-mark" aria-label="Thikana home">
+      <img class="brand-logo" src="/images/thikana-logo.png" alt="Thikana — Find Your Next Stay" width="610" height="400">
+    </a>
+    <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+    <ul class="nav-links" id="primary-navigation">
+      <li><a href="/homes" class="<%= currentPage === 'Home' ? 'active' : '' %>">Explore stays</a></li>
+      <% if (isLoggedIn) { %>
+        <% if (user && user.userType === 'guest') { %>
+          <li><a href="/bookings" class="<%= currentPage === 'bookings' ? 'active' : '' %>">Bookings</a></li>
+          <li><a href="/favorite" class="<%= currentPage === 'favorite' ? 'active' : '' %>">Favourites</a></li>
+        <% } else { %>
+          <li><a href="/host/host-home-list" class="<%= currentPage === 'host-homes' ? 'active' : '' %>">My listings</a></li>
+          <li><a href="/host/add-home" class="<%= currentPage === 'addHome' ? 'active' : '' %>">Add property</a></li>
+          <li><a href="/host/bookings" class="<%= currentPage === 'host-bookings' ? 'active' : '' %>">Bookings</a></li>
+          <li><a href="/host/reviews" class="<%= currentPage === 'host-reviews' ? 'active' : '' %>">Guest feedback</a></li>
+        <% } %>
+        <li><a href="/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>"><span class="nav-avatar"><%= user && user.firstName ? user.firstName.charAt(0) : 'F' %></span> Profile</a></li>
+        <li>
+          <form action="/logout" method="POST">
+            <button type="submit" class="nav-cta">Logout</button>
+          </form>
+        </li>
+      <% } else { %>
+        <li><a href="/signup" class="nav-pill">Sign up</a></li>
+        <li><a href="/login" class="nav-cta">Login</a></li>
+      <% } %>
+    </ul>
+  </nav>
+</header>
+<script>
+  const navToggle = document.querySelector('.mobile-nav-toggle');
+  if (navToggle) {
+    navToggle.addEventListener('click', () => {
+      const links = document.querySelector('.nav-links');
+      const open = links.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open);
+      navToggle.textContent = open ? 'Close' : 'Menu';
+    });
+  }
+</script>

@@ -1,0 +1,56 @@
+<%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+    <main class="container mx-auto mt-10 max-w-3xl px-4">
+      <div class="bg-white rounded-xl shadow-md p-8">
+        <h1 class="section-heading mb-6">Booking details</h1>
+
+        <div class="space-y-4 text-gray-700">
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Property</span>
+            <span><%= booking.home ? booking.home.houseName : 'Property unavailable' %></span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Location</span>
+            <span><%= booking.home ? booking.home.location : 'The original listing is no longer available.' %></span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Check-in</span>
+            <span><%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Check-out</span>
+            <span><%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Guests</span>
+            <span><%= booking.guests %></span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Nights</span>
+            <span><%= Math.round((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24)) %></span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Total</span>
+            <span><%= formatCurrency(booking.totalPrice) %></span>
+          </div>
+          <div class="flex justify-between border-b pb-2">
+            <span class="font-medium">Status</span>
+            <span class="font-semibold <%= booking.status === 'cancelled' ? 'text-red-600' : 'text-green-600' %>"><%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %></span>
+          </div>
+        </div>
+
+        <div class="mt-8 flex gap-4">
+          <% if (booking.home) { %><a href="/homes/<%= booking.home._id %>" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300">View Property</a><% } %>
+          <% if (booking.status === 'confirmed' && new Date(booking.checkIn) > new Date()) { %>
+            <form action="/bookings/<%= booking._id %>/cancel" method="POST" onsubmit="return confirm('Cancel this booking?')">
+              <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-900 transition duration-300">Cancel Booking</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<footer class="site-footer homepage-footer">
+  <div class="footer-main">
+    <div class="footer-brand-block">
+      <a class="footer-brand" href="/" aria-label="Thikana — Find Your Next Stay">
+        <img src="/images/thikana-logo.png" alt="Thikana — Find Your Next Stay" width="610" height="400" loading="lazy">
+      </a>
+      <p>Thoughtful stays for the places you’ve been meaning to go.</p>
+    </div>
+    <nav class="footer-column" aria-label="Explore">
+      <h2>Explore</h2>
+      <a href="/homes">All stays</a>
+      <a href="/#destinations">Popular destinations</a>
+      <a href="/#experiences">Browse by experience</a>
+    </nav>
+    <nav class="footer-column" aria-label="Your Thikana">
+      <h2>Your Thikana</h2>
+      <% if (isLoggedIn && user && user.userType === 'guest') { %>
+        <a href="/bookings">My bookings</a>
+        <a href="/favorite">Favourites</a>
+        <a href="/profile">My account</a>
+      <% } else if (isLoggedIn && user && user.userType === 'host') { %>
+        <a href="/host/host-home-list">My listings</a>
+        <a href="/host/add-home">Add a property</a>
+        <a href="/host/bookings">Guest bookings</a>
+        <a href="/host/reviews">Guest feedback</a>
+      <% } else { %>
+        <a href="/login">Sign in</a>
+        <a href="/signup">Create an account</a>
+        <a href="/signup">Become a host</a>
+      <% } %>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <span>© <%= new Date().getFullYear() %> Thikana</span>
+    <span>Find Your Next Stay.</span>
+  </div>
+</footer>
