@@ -20,9 +20,12 @@ body {
 }
 a { color: inherit; }
 .site-header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 10;
   background: rgba(255,255,255,.96);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(228,231,225,.9);
   box-shadow: 0 4px 20px rgba(36,49,61,.04);
 }
